@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Header } from '../components/Header'
+import { Table } from '../components/Table'
+import { getProducts } from '../lib/request'
 
+
+const url = 'http://localhost:8080/' 
 
 export function Feed() {
 
@@ -9,17 +13,18 @@ export function Feed() {
 
 
     useEffect(()=>{
-        getProducts()
+        getListProducts()
     }, [])
 
-    async function getProducts() {
+
+    // archivo dfuera de src se llama .env y dentro ese archivo solo tiene lo de la url 
+    async function getListProducts() {
         setLoading(true)
-        const req = await fetch ('https://virtserver.swaggerhub.com/ssinuco/BurgerQueenAPI/2.0.0/products')
-        const data = await req.json()
+        const dataProducts = await getProducts(`${url}products`)
 
         setTimeout(() => {
             setLoading(false)
-            setProducts(data)
+            setProducts(dataProducts)
             
         }, 2000);
 
@@ -27,16 +32,19 @@ export function Feed() {
 
     return (
         <div>
-            <h1>Feed</h1>
-
             <Header/>
 
+
+            <h1>Feed</h1>
+
+
             <div>
+              
                 <button>Productos</button>
                 <button>Usuarios</button>
             </div>
 
-
+            {<Table products={products}/>}
            {
                 isLoading 
                 ? <h1>...Loading</h1> 

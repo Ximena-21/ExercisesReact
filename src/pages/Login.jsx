@@ -1,5 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Header } from '../components/Header'
+import { Table } from '../components/Table'
+import { getProducts, getToken } from '../lib/request'
+
+const url = 'http://localhost:8080/' 
+//const navigate = useNavigate()
+//const navigate = useNavigate();
+
 
 export function Login() {
 
@@ -14,25 +22,30 @@ export function Login() {
         setPassword(event.target.value)
     }
 
-    function handleSubmit(event) {
+   async function handleSubmit(event) {
         event.preventDefault()
-        
-        //funcion de loguear ()
-        //fetch('/myapi/login',{email,password})
-        console.log({
+        const data = {
             email: email,
             password: password
-        })
+        }
+        const dataLogin = await getToken(`${url}login`, data)
+
+        const token = dataLogin.accessToken
+       // navigate("/feed")
+        window.localStorage.setItem("loginToken", token);
+       
+        console.log('DATA login>>>>', token)
+
+       // getProducts(`${url}products`)
+
     }
-
-
-    // console.log(email)
 
     return (
         <div>
+            <Header />
+
             <h1>LOGIN</h1>
 
-            <Header />
 
             <form onSubmit={handleSubmit} action="">
                 <input onChange={handleEmailChange} value={email} type="email" placeholder='Email' />
@@ -40,8 +53,7 @@ export function Login() {
                 <button>Enviar</button>
             </form>
 
-            <button onClick={()=>{}}>cambiarEmail</button>
-            {email}
         </div>
     )
 }
+
